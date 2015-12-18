@@ -30,6 +30,25 @@
 
         textarea = getNode('.chat-textarea');
         chatName = getNode('.chat-name');
+        statusDefault = getNode('.chat-status span').textContent;
+
+
+        console.log(statusDefault);
+        setStatus = function(s){
+            statusDefault = s;
+
+            if(s !== statusDefault){
+                var delay = setTimeout(function(){
+
+                    setStatus(statusDefault);
+                    clearInterval(delay);
+                }, 3000);
+            }
+        }
+
+        setStatus('text');
+
+        console.log(statusDefault);
 
         try {
 
@@ -41,8 +60,14 @@
         }
 
         if (socket !== undefined) {
-            // listen for keydown
 
+            // List for as status
+
+            socket.on('status', function (data) {
+               setStatus
+            });
+
+            // listen for keydown
             textarea.addEventListener('keydown', function(e){
                 var self = this, name = chatName.value;
 

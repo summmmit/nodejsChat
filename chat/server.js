@@ -1,7 +1,7 @@
 var mongo = require('mongodb').MongoClient;
 var client = require('socket.io').listen(8080).sockets;
 
-mongo.connect('mongodb://127.0.0.1/nodejsChat', function (err, db) {
+mongo.connect('mongodb://127.0.0.1/chat', function (err, db) {
 
     if (err)
         throw err;
@@ -11,6 +11,9 @@ mongo.connect('mongodb://127.0.0.1/nodejsChat', function (err, db) {
         console.log('some is helre');
 
         var col = db.collection('messages');
+        var sendStatus = function(s){
+            socket.emit('status', s);
+        }
 
         // wait for input
         socket.on('input', function (data) {
@@ -22,11 +25,11 @@ mongo.connect('mongodb://127.0.0.1/nodejsChat', function (err, db) {
             var whiteSpacePattern = /^\s*$/;
 
             if(whiteSpacePattern.test(name) || whiteSpacePattern.test(message)){
-                console.log('Invalid data');
+                sendStatus("Name and Message is Required.");
             }else {
 
-                col.insert({name: name, message: message}, function(inputData){
-                    console.log(inputData);
+                col.insert({name: name, message: message}, function(){
+                    console.log("Inserted");
                 })
             }
         })
